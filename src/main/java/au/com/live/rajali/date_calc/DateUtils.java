@@ -39,7 +39,7 @@ public class DateUtils {
                 || ((Integer.valueOf(year) % 4 == 0) && (Integer.valueOf(year) % 100 != 0));
     }
 
-    private static Boolean validateDatesPrecedence(BetaDate startDate, BetaDate endDate) {
+    static Boolean validateDatesPrecedence(BetaDate startDate, BetaDate endDate) {
         if (startDate.getYearInt() > endDate.getYearInt()) {
             return Boolean.FALSE;
         } else if ((startDate.getYearInt() == endDate.getYearInt())
@@ -54,9 +54,6 @@ public class DateUtils {
         }
     }
 
-    /*
-    In the final result, deduct two days as we are excluding the start Date and end Date.
-     */
     static int calculateDaysBetweenBetaDates(BetaDate startDate, BetaDate endDate) throws ParseException {
 
         int totalNoOfDays = 0;
@@ -65,60 +62,136 @@ public class DateUtils {
         } else {
             int differenceInYear = endDate.getYearInt() - startDate.getYearInt();
             if (differenceInYear == 0) {
-                //calculate different between month and days
+                totalNoOfDays += daysBetweenMonthAndDays(startDate.getYearStr(), startDate.getMonthInt(), startDate.getDayInt(),
+                        endDate.getMonthInt(), endDate.getDayInt());
             } else if (differenceInYear == 1) {
-                //calculate days from start date till start of next year
-                //calculate days from start of year to endDate
                 totalNoOfDays += daysFromStartDateTillEndOfYear(startDate);
                 totalNoOfDays += daysFromStartOfYearTillEndDate(endDate);
             } else {
-                //calculate days from start date till start of next year
-                //calculate days from start of year to endDate
                 totalNoOfDays += daysFromStartDateTillEndOfYear(startDate);
                 totalNoOfDays += daysFromStartOfYearTillEndDate(endDate);
                 for (int i = 2; i < differenceInYear; i++) {
                     int year = startDate.getYearInt() + i;
-                    if (!checkIfLeapYear(String.valueOf(year))) {
-                        totalNoOfDays += NO_OF_DAYS_NON_LEAP_YEAR;
-                    } else {
-                        //count 29 days for Feb instead of 28
-                        totalNoOfDays += NO_OF_DAYS_NON_LEAP_YEAR;
+                    totalNoOfDays += NO_OF_DAYS_NON_LEAP_YEAR;
+                    if (checkIfLeapYear(String.valueOf(year))) {
                         totalNoOfDays += 1;
                     }
                 }
             }
-
-
-            //int numberOfDaysStartDate = ( (1451 * startDate.getYearInt()) / 4) + ( (153*startDate.getMonthInt()) /5 ) + startDate.getDayInt();
-            //int numberOfDaysEndDate = ( (1451 * endDate.getYearInt()) / 4) + ( (153*endDate.getMonthInt()) /5 ) + endDate.getDayInt();
-            //return numberOfDaysEndDate - numberOfDaysStartDate;
             return totalNoOfDays;
         }
     }
 
-    private static int daysFromStartDateTillEndOfYear(BetaDate startDate) {
+    /*
+    the start day and end day are exclusive to calculation
+     */
+    static int daysBetweenMonthAndDays(String yearStr, Integer startMonth, Integer startDay, Integer endMonth, Integer endDay) {
+        int totalDaysInBetween = 0;
+        endDay = endDay - 1;
+        totalDaysInBetween += (monthAndDaysMap.get(startMonth) - startDay);
+        if (endDay < 1) {
+            endMonth--;
+            totalDaysInBetween += monthAndDaysMap.get(endMonth);
+            endDay = monthAndDaysMap.get(endMonth);
+        } else {
+            totalDaysInBetween += endDay;
+        }
+
+        int differenceInMonths = endMonth - startMonth;
+
+        for (int loop = 0; loop < differenceInMonths - 1; loop++) {
+            if (startMonth.equals(endMonth)) {
+                break;
+            }
+            startMonth++;
+            totalDaysInBetween += monthAndDaysMap.get(startMonth);
+
+            if (checkIfLeapYear(yearStr)
+                    &&  ( "2".equalsIgnoreCase(String.valueOf(startMonth))
+                    || "2".equalsIgnoreCase(String.valueOf(endMonth)))) {
+                totalDaysInBetween += 1;
+            }
+        }
+        return totalDaysInBetween;
+    }
+
+    /*
+    the start day is exclusive to calculation
+     */
+    static int daysFromStartDateTillEndOfYear(BetaDate startDate) {
+        int totalNoOfDaysTillYearEnd = 0;
+        int month = startDate.getMonthInt();
+        int day = startDate.getDayInt();
+        int differenceInMonths = 12 - month;
+        day++;
         if (!checkIfLeapYear(startDate.getYearStr())) {
+            if (day > monthAndDaysMap.get(month)) {
+                month++;
+                totalNoOfDaysTillYearEnd += monthAndDaysMap.get(month);
+            } else {
+                totalNoOfDaysTillYearEnd += day;
+            }
 
         } else {
-            //if Feb not part of it count 29 days for Feb
+            if ( (month != 2 && (day > monthAndDaysMap.get(month)))
+                || (month == 2 && (day > 29)) ) {
+                month++;
+                totalNoOfDaysTillYearEnd += monthAndDaysMap.get(month);
+            } else {
+                totalNoOfDaysTillYearEnd += day;
+                month++;
+            }
         }
 
-        return 1;
+        differenceInMonths--;
+        totalNoOfDaysTillYearEnd += daysForGivenNumberOfMonths(differenceInMonths, month, true);
+
+        return totalNoOfDaysTillYearEnd;
     }
 
-    private static int daysFromStartOfYearTillEndDate(BetaDate endDate) {
-        if (!checkIfLeapYear(endDate.getYearStr())) {
-
+    /*
+    the end day is exclusive to calculation
+     */
+    static int daysFromStartOfYearTillEndDate(BetaDate endDate) {
+        int totalNoOfDaysTillYearEnd = 0;
+        int month = endDate.getMonthInt();
+        int day = endDate.getDayInt();
+        int differenceInMonths = month - 1;
+        day--;
+        if ( day == 0) {
+            month--;
+            totalNoOfDaysTillYearEnd += monthAndDaysMap.get(month);
+            differenceInMonths--;
         } else {
-            //if Feb not part of it count 29 days for Feb
+            totalNoOfDaysTillYearEnd += day;
+            month--;
         }
-        return 1;
+
+        if (checkIfLeapYear(endDate.getYearStr()) && month == 2) {
+            totalNoOfDaysTillYearEnd += 1;
+        }
+
+        totalNoOfDaysTillYearEnd += daysForGivenNumberOfMonths(differenceInMonths, month, false);
+
+        return totalNoOfDaysTillYearEnd;
     }
 
-    //Possibility 1
-    private static final int msInOneDay = 1000*60*60*24;
-    private static int getMillisecondsForDateSince19010101(BetaDate date) {
-
-        return 1;
+    static int daysForGivenNumberOfMonths(Integer noOfMonths, Integer startMonth, Boolean isDateToEndOfYear) {
+        Integer totalDays = 0;
+        for (int loop = 0; loop < noOfMonths; loop++) {
+            totalDays += monthAndDaysMap.get(startMonth);
+            if (isDateToEndOfYear) {
+                startMonth++;
+                if (startMonth > 12) {
+                    break;
+                }
+            } else {
+                startMonth--;
+                if (startMonth == 0) {
+                    break;
+                }
+            }
+        }
+        return totalDays;
     }
 }

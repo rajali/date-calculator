@@ -44,10 +44,10 @@ final class Consts {
 
     static final class Regex {
         private Regex() {}
-        static final String DATE_PATTERN = "^\\d{4}-\\d{2}-\\{2}$";
-        static final String YEAR_RANGE = "(190[1-9]|299[0-9])";
-        static final String FEB_DATES_RANGE = "(02)[-.](0[1-9]|1[0-9]|2[0-8])";
-        static final String FEB_DATES_RANGE_LEAP_YEAR = "(02)[-.](0[1-9]|1[0-9]|2[0-9])";
+        static final String DATE_PATTERN = "^\\d{4}-\\d{2}-\\d{2}$";
+        static final String YEAR_RANGE = "(190[1-9]|19[1-9]\\d|2\\d{3})";
+        static final String FEB_DATES_RANGE = "^(02)[-.](0[1-9]|1[0-9]|2[0-8])$";
+        static final String FEB_DATES_RANGE_LEAP_YEAR = "^(02)[-.](0[1-9]|1[0-9]|2[0-9])$";
         static final String DATE_REGEX = "^" + YEAR_RANGE + "-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$";
     }
 }

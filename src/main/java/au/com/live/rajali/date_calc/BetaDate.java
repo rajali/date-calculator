@@ -63,18 +63,24 @@ public class BetaDate {
         return dateStr;
     }
 
-    private void validateDate(final String date) throws ParseException {
+    static void validateDate(final String date) throws ParseException {
+        String extractedDate = date.substring(date.indexOf("-") + 1);
+
         if (!date.matches(DATE_PATTERN)) {
             throw new ParseException("Invalid date pattern.");
         } else if (!date.matches(DATE_REGEX)) {
             throw new ParseException("Invalid date range provided.");
-        } else if ("02".equalsIgnoreCase(date.substring(date.indexOf("-") + 1, date.indexOf("-") + 3))
-                && (!checkIfLeapYear(date.substring(0, date.indexOf("-")))
-                ? !date.substring(date.indexOf("-") + 1).matches(FEB_DATES_RANGE)
-                : !date.substring(date.indexOf("-") + 1).matches(FEB_DATES_RANGE_LEAP_YEAR))) {
-            throw new ParseException("Invalid date range for the monthStr of February.");
-        } else {
-            throw new ParseException("Invalid date format.");
-        }
+        } else if ("02".equalsIgnoreCase(date.substring(date.indexOf("-") + 1, date.indexOf("-") + 3))) {
+            if (checkIfLeapYear(date.substring(0, date.indexOf("-")))) {
+                if (!extractedDate.matches(FEB_DATES_RANGE_LEAP_YEAR)) {
+                    throw new ParseException("Invalid date range for the monthStr of February.");
+                }
+            } else {
+                if (!extractedDate.matches(FEB_DATES_RANGE)) {
+                    throw new ParseException("Invalid date range for the monthStr of February.");
+                }
+
+            }
+        } else {}
     }
 }
