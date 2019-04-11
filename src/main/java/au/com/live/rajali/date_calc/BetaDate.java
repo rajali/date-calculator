@@ -9,12 +9,10 @@ import static au.com.live.rajali.date_calc.Consts.Regex.FEB_DATES_RANGE_LEAP_YEA
 import static au.com.live.rajali.date_calc.DateUtils.checkIfLeapYear;
 
 
-public class BetaDate {
+class BetaDate {
 
     private String dateStr;
     private String yearStr;
-    private String monthStr;
-    private String dayStr;
     private int yearInt;
     private int monthInt;
     private int dayInt;
@@ -28,38 +26,28 @@ public class BetaDate {
 
     private BetaDate(String year, String month, String day) {
         this.yearStr = year;
-        this.monthStr = month;
-        this.dayStr = day;
         this.yearInt = Integer.valueOf(year);
         this.monthInt = Integer.valueOf(month);
         this.dayInt = Integer.valueOf(day);
     }
 
-    public String getYearStr() {
+    String getYearStr() {
         return yearStr;
     }
 
-    public String getMonthStr() {
-        return monthStr;
-    }
-
-    public String getDayStr() {
-        return dayStr;
-    }
-
-    public int getYearInt() {
+    int getYearInt() {
         return yearInt;
     }
 
-    public int getMonthInt() {
+    int getMonthInt() {
         return monthInt;
     }
 
-    public int getDayInt() {
+    int getDayInt() {
         return dayInt;
     }
 
-    public String getDateStr() {
+    String getDateStr() {
         return dateStr;
     }
 
@@ -81,6 +69,6 @@ public class BetaDate {
                 }
 
             }
-        } else {}
+        }
     }
 }

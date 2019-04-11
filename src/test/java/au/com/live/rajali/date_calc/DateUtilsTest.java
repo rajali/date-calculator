@@ -26,10 +26,19 @@ public class DateUtilsTest {
     }
 
     @Test
-    public void testCheckIfLeapYear() throws ParseException {
+    public void testCalculateDaysBetweenBetaDatesTestcaseThree() throws ParseException {
+        BetaDate startDate = new BetaDate("1983-06-02");
+        BetaDate endDate = new BetaDate("1988-06-22");
+        int result = DateUtils.calculateDaysBetweenBetaDates(startDate, endDate);
+
+        assertThat(result).isEqualTo(1845);
+    }
+
+    @Test
+    public void testCheckIfLeapYear() {
         String leapYearOne = "2020";
         String nonLeapYearOne = "1999";
-        
+
         Boolean resultInvalid = DateUtils.checkIfLeapYear(nonLeapYearOne);
         Boolean resultValid = DateUtils.checkIfLeapYear(leapYearOne);
 
@@ -111,7 +120,7 @@ public class DateUtilsTest {
     @Test
     public void testDaysFromStartDateTillEndOfYearLeapYear() throws ParseException {
         BetaDate date = new BetaDate("2020-02-29");
-        int totalDaysLeftTillYearEnd = 306;
+        int totalDaysLeftTillYearEnd = 305;
         int noOfDays = DateUtils.daysFromStartDateTillEndOfYear(date);
         assertThat(noOfDays).isEqualTo(totalDaysLeftTillYearEnd);
     }
@@ -132,5 +141,4 @@ public class DateUtilsTest {
         int noOfDays = DateUtils.daysFromStartOfYearTillEndDate(endDate);
         assertThat(noOfDays).isEqualTo(totalDaysLeftTillYearEnd);
     }
-
 }

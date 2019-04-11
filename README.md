@@ -19,7 +19,7 @@ Although any dates specified within the valid date range listed above should wor
 ### TEST CASES 
 1. 1983-06-02 – 1983-06-22: 19 days 
 2. 1984-07-04 – 1984-12-25: 173 days 
-3. 989-01-03 – 1983-08-03: 1979 days
+3. 989-01-03 – 1983-08-03: 1979 days (This cannot work as it does not comply to the other requirement for date range.)
  
 ####HINTS
 
@@ -36,4 +36,23 @@ Although any dates specified within the valid date range listed above should wor
 ```
 mvn archetype:generate "-DgroupId=au.com.live.rajali.date_calc" "-DartifactId=date-calculator" "-DarchetypeGroupId=com.thepracticaldeveloper" "-DarchetypeArtifactId=archetype-java-basic-tpd" "-DarchetypeVersion=1.0.0" "-DinteractiveMode=false"
 ```
+# Usage
+```
+usage: date-calculator-{version-no}.jar -e <arg> -s <arg>
+ 
+ Example:  java -jar date-calculator-1.0.0-SNAPSHOT-jar-with-dependencies.jar -s "1983-06-02" -e "1983-06-22"
 
+ Description:
+
+ This application calculates number of days between a start and end date.
+ The calculation excludes the provided start and end dates.
+
+ Formatting and Acceptable Date Range:
+
+ The dates provided must be between 1901-01-01 and 2999-12-31.
+ Valid date format is YYYY-MM-DD.
+
+ Argument Details:
+     -e,--enddate <arg>       The end date.
+     -s,--startdate <arg>     The start date.
+```

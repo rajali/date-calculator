@@ -8,13 +8,11 @@ final class Consts {
         private Prompts() {}
 
         //Operation Set Description
-        static final String OPERATION = " ** Calculate days in between a start and end date **. ";
-        static final String OPERATION_SET_DESCRIPTION = " The calculation excludes the provided start and end dates." +
-                " \n The dates provided must be between 1901-01-01 and 2999-12-31." +
-                " \n Valid date format is YYYY-MM-DD. ";
+        static final String OPERATION_SET_DESCRIPTION = " \n Description: \n \n This application calculates number of days between a start and end date. \n The calculation excludes the provided start and end dates." +
+                " \n \n Formatting and Acceptable Date Range: \n \n The dates provided must be between 1901-01-01 and 2999-12-31." +
+                " \n Valid date format is YYYY-MM-DD. \n \n Argument Details: \n";
 
         //Command Line Arguments
-        //* Main Operation
         static final String START_DATE_ARGUMENT_DESCRIPTION = "The start date.";
         static final String END_DATE_ARGUMENT_DESCRIPTION = "The end date.";
 

@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import static au.com.live.rajali.date_calc.Consts.Operation.END_DATE_LONG_OPT;
@@ -22,7 +21,7 @@ import static au.com.live.rajali.date_calc.Consts.Values.FIVE;
 import static au.com.live.rajali.date_calc.Consts.Values.ONE_HUNDRED;
 
 /**
- * Simple main application
+ * Simple Date Calculator application
  */
 public class App {
     private static Logger LOGGER = LoggerFactory.getLogger(App.class);
@@ -30,18 +29,21 @@ public class App {
     private static BetaDate startDate;
     private static BetaDate endDate;
 
-    public static void main(String[] args) throws ParseException {
-        printUsage(constructCommandOptions());
-        displayBlankLines();
-        useArgumentsParser(args);
-        printCalculatedDaysBetweenDates();
+    public static void main(String[] args) {
+        try {
+            useArgumentsParser(args);
+            printCalculatedDaysBetweenDates();
+        } catch (ParseException ex) {
+            LOGGER.error("Exception encountered as: " + ex);
+        }
     }
 
     private static void printCalculatedDaysBetweenDates() throws ParseException {
         if (startDate.getDateStr().equalsIgnoreCase(endDate.getDateStr())) {
-            System.out.println(0);
+            System.out.println("Number of Days calculated as: " + 0);
         } else {
-            System.out.println(DateUtils.calculateDaysBetweenBetaDates(startDate, endDate));
+            int numberOfDaysCalculated = DateUtils.calculateDaysBetweenBetaDates(startDate, endDate);
+            System.out.println("Number of Days calculated as: " +numberOfDaysCalculated);
         }
     }
 
@@ -57,7 +59,6 @@ public class App {
 
             if ((commandLine.hasOption(START_DATE_OPT) || commandLine.hasOption(START_DATE_LONG_OPT))
                     && (commandLine.hasOption(END_DATE_OPT) || commandLine.hasOption(END_DATE_LONG_OPT))) {
-                LOGGER.info(Consts.Prompts.OPERATION);
                 startDate = new BetaDate((null != commandLine.getOptionValue(START_DATE_OPT))
                         ? commandLine.getOptionValue(START_DATE_OPT) : commandLine.getOptionValue(START_DATE_LONG_OPT));
                 endDate = new BetaDate((null != commandLine.getOptionValue(END_DATE_OPT))
@@ -79,18 +80,16 @@ public class App {
     private static Options constructCommandOptions() {
         final Options options = new Options();
         options.addRequiredOption(START_DATE_OPT, START_DATE_LONG_OPT, true,
-                Consts.Prompts.OPERATION + Consts.Prompts.OPERATION_SET_DESCRIPTION
-                        + Consts.Prompts.START_DATE_ARGUMENT_DESCRIPTION);
+                Consts.Prompts.START_DATE_ARGUMENT_DESCRIPTION);
         options.addRequiredOption(END_DATE_OPT, END_DATE_LONG_OPT, true,
-                Consts.Prompts.OPERATION + Consts.Prompts.OPERATION_SET_DESCRIPTION
-                        + Consts.Prompts.END_DATE_ARGUMENT_DESCRIPTION);
+                Consts.Prompts.END_DATE_ARGUMENT_DESCRIPTION);
         return options;
     }
 
     private static void printUsage(final Options options) {
         PrintWriter writer = new PrintWriter(System.out);
         final HelpFormatter usageFormatter = new HelpFormatter();
-        usageFormatter.printHelp(writer, ONE_HUNDRED, APP_NAME, EMPTY_STRING, options, FIVE, FIVE, EMPTY_STRING, Boolean.TRUE);
+        usageFormatter.printHelp(writer, ONE_HUNDRED, APP_NAME, Consts.Prompts.OPERATION_SET_DESCRIPTION, options, FIVE, FIVE, EMPTY_STRING, Boolean.TRUE);
         writer.flush();
         writer.close();
     }
@@ -98,7 +97,7 @@ public class App {
     private static void displayBlankLines() {
         try {
             for (int i = 0; i < 2; i++) {
-                ((OutputStream) System.out).write("\n".getBytes());
+                System.out.write("\n".getBytes());
             }
         } catch (IOException ex) {
             for (int i = 0; i < 2; i++) {
